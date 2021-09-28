@@ -1,0 +1,221 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --visible-column-count: 1;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#requestTableWrapper > table {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  border-collapse: separate;
+  border: none;
+  border-spacing: 0;
+}
+#requestTableWrapper > table > thead > tr {
+  background-color: var(--table-head);
+}
+#requestTableWrapper > table > thead > tr > th {
+  line-height: 1.5rem;
+  height: 1.5rem;
+  border-right: 1px solid var(--table-row-border);
+  padding: 1px 4px;
+  font-weight: normal;
+  white-space: nowrap;
+  text-align: left;
+  min-width: fit-content;
+  width: 100%;
+  max-width: calc(100vw / var(--visible-column-count));
+}
+#requestTableWrapper > table > tbody > tr {
+  background-color: var(--table-odd);
+  border: none;
+}
+#requestTableWrapper > table > tbody > tr:nth-child(even) {
+  background-color: var(--table-even);
+}
+#requestTableWrapper > table > tbody > tr:hover {
+  background-color: var(--network-row-hover);
+}
+#requestTableWrapper > table > tbody > tr > td {
+  padding: 1px 4px;
+  height: 20px;
+  border-right: 1px solid var(--table-row-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  max-width: calc(100vw / var(--visible-column-count));
+}
+#requestTableWrapper > table > tbody > tr > td:last-of-type {
+  border-right: none;
+}
+
+#network-toolbar {
+  background-color: var(--network-toolbar);
+  border-bottom: 1px solid var(--table-row-border);
+  padding: 2px;
+}
+#network-toolbar button {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+#network-toolbar button > img {
+  width: 1rem;
+  height: 1rem;
+}
+
+.network-table-subtle {
+  color: var(--network-table-subtle);
+}
+
+abbr.network-table-subtle {
+  text-decoration: none;
+}
+
+.network-error-row {
+  color: var(--network-error-row);
+}
+
+dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 0.5rem;
+  border: none;
+  width: 100%;
+  max-width: var(--max-content-width);
+  box-shadow: var(--shadow);
+  padding: 0.5rem;
+  background-color: var(--table-head);
+  color: #fff;
+  flex-direction: column;
+}
+dialog[open] {
+  display: flex;
+}
+dialog > .dialog-header {
+  display: flex;
+}
+dialog > .dialog-header > h2 {
+  font-weight: normal;
+}
+dialog > .dialog-header > .dialog-close {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fff;
+  margin-left: auto;
+  transition: 200ms;
+}
+dialog > .dialog-header > .dialog-close:hover {
+  opacity: 0.5;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper {
+  display: flex;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper > select, dialog > .dialog-content > .repeatRequestUrlWrapper input {
+  appearance: none;
+  color: #fff;
+  background-color: var(--table-even);
+  border: 2px solid var(--table-row-border);
+  padding: 0.6rem;
+  margin: 0;
+  font-size: 1rem;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper > select:focus, dialog > .dialog-content > .repeatRequestUrlWrapper input:focus {
+  outline: none;
+  background-color: transparent;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper > select {
+  border-right: none;
+  margin-right: -4px;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper > input {
+  flex: 1;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 1.5rem 0 0.5rem 0;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanelHeader {
+  margin-bottom: 0.75rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanelHeader > button {
+  appearance: none;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanelHeader > button:not(:last-of-type) {
+  margin-right: 0.75rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanelHeader > button.is-active {
+  border-bottom: 3px solid var(--table-row-border);
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] {
+  display: none;
+  font-size: 0.9rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id].is-active {
+  display: initial;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table {
+  width: 100%;
+  height: 100%;
+  max-height: 45rem;
+  border: 2px solid var(--table-row-border);
+  border-collapse: collapse;
+  font-size: inherit;
+  margin: 0;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr {
+  transition: 200ms;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr > td, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr th {
+  border: 2px solid var(--table-row-border);
+  text-align: left;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr > td > input, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr th > input {
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  padding: 0.5rem;
+  font-size: inherit;
+  color: #fff;
+  width: 100%;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr > td > input:focus, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr th > input:focus {
+  outline: none;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr:focus-within {
+  border-color: #fff;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr > th {
+  padding: 0.5rem;
+}
+
+/*# sourceMappingURL=network.css.map */

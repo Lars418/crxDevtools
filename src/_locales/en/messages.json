@@ -1,0 +1,51 @@
+{
+  "extensionName": {
+    "message": "Network Enhancement Suite"
+  },
+  "extensionDescription": {
+    "message": "The Network Enhancement Suite (NES) adds new network features to your browsers devtools."
+  },
+  "extensionShortName": {
+    "message": "NES"
+  },
+  "extensionHomepageUrl": {
+    "message": "https://lars.koelker.dev/extensions/nes?src=CRX_NES_DETAILS_TAB"
+  },
+  "btnClearRequests": {
+    "message": "Clear requests"
+  },
+  "blockedDevtools": {
+    "message": "Using devtools in light mode is a sin. Please switch to dark mode to use this tab."
+  },
+
+  "repeatRequestDialogTitle": {
+    "message": "Repeat request"
+  },
+  "repeatRequestDialogMethod": {
+    "message": "HTTP method"
+  },
+  "repeatRequestDialogUrl": {
+    "message": "Enter request URL"
+  },
+  "repeatRequestDialogPanelParams": {
+    "message": "Params"
+  },
+  "repeatRequestDialogPanelAuthorization": {
+    "message": "Authorization"
+  },
+  "repeatRequestDialogPanelHeaders": {
+    "message": "Headers"
+  },
+  "repeatRequestDialogPanelBody": {
+    "message": "Body"
+  },
+  "repeatRequestDialogKey": {
+    "message": "KEY"
+  },
+  "repeatRequestDialogValue": {
+    "message": "VALUE"
+  },
+  "dialogClose": {
+    "message": "Close dialog"
+  }
+}

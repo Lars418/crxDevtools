@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "1.0",
+  "version_name": "NES 1.0",
+  "icons": {
+    "16": "img/logo/16.png",
+    "32": "img/logo/32.png",
+    "48": "img/logo/48.png",
+    "64": "img/logo/64.png",
+    "128": "img/logo/128.png"
+  },
+
+  "devtools_page": "devtools/devtools.html",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "contextMenus"
+  ],
+
+  "background": {
+    "service_worker": "sw.js"
+  },
+
+  "default_locale": "en",
+  "homepage_url": "https://lars.koelker.dev/extensions/nes/?src=CRX_NES_DETAILS_TAB",
+  "host_permissions": [ "*://*/*" ]
+}

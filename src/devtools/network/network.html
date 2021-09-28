@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title data-intl="extensionName"></title>
+
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../lib/mermaid.css">
+    <link rel="stylesheet" href="network.css">
+
+    <script src="../../util/requestTable.js" defer></script>
+    <script src="../../util/util.js" defer></script>
+    <script src="../../util/intl.js" defer></script>
+    <script src="network.js" defer></script>
+</head>
+<body>
+    <section id="network-toolbar">
+        <button
+            id="btnClearRequests"
+            data-intl-title="btnClearRequests"
+        >
+            <img src="../../img/icon/x-circle.svg" alt="" />
+        </button>
+    </section>
+
+    <div id="requestTableWrapper"></div>
+
+
+    <dialog id="repeatRequestDialog">
+        <div class="dialog-header">
+            <h2 data-intl="repeatRequestDialogTitle"></h2>
+
+            <button
+                    class="dialog-close"
+                    data-intl-title="dialogClose"
+                    tabindex="-1"
+            >
+                &#10005;
+            </button>
+        </div>
+
+        <div class="dialog-content">
+            <div class="repeatRequestUrlWrapper">
+                <select id="repeatRequestDialogMethod"></select>
+
+                <input
+                        type="url"
+                        spellcheck="false"
+                        id="repeatRequestDialogUrl"
+                        autofocus
+                />
+            </div>
+
+            <div class="repeatRequestPanelWrapper">
+                <div class="repeatRequestPanelHeader"></div>
+                <div class="repeatRequestPanel">
+                    <div data-panel-id="Params"></div>
+
+                    <div data-panel-id="Authorization"></div>
+
+                    <div data-panel-id="Headers">
+                        <table class="input-table" data-table-id="headers-table">
+                            <thead>
+                                <tr>
+                                    <th data-intl="repeatRequestDialogKey"></th>
+                                    <th data-intl="repeatRequestDialogValue"></th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="panel-content"></tbody>
+                        </table>
+                    </div>
+
+                    <div data-panel-id="Body"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dialog-actions">
+        </div>
+    </dialog>
+</body>
+</html>

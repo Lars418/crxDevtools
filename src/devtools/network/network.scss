@@ -1,0 +1,260 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --visible-column-count: 1;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#requestTableWrapper > table {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  border-collapse: separate;
+  border: none;
+  border-spacing: 0;
+
+  > thead {
+    > tr {
+      background-color: var(--table-head);
+
+      > th {
+        line-height: 1.5rem;
+        height: 1.5rem;
+        border-right: 1px solid var(--table-row-border);
+        padding: 1px 4px;
+        font-weight: normal;
+        white-space: nowrap;
+        text-align: left;
+        min-width: fit-content;
+        width: 100%;
+        max-width: calc(100vw / var(--visible-column-count));
+      }
+    }
+  }
+
+  > tbody {
+    > tr {
+      background-color: var(--table-odd);
+      border: none;
+
+      &:nth-child(even) {
+        background-color: var(--table-even);
+      }
+
+      &:hover {
+        background-color: var(--network-row-hover);
+      }
+
+      > td {
+        padding: 1px 4px;
+        height: 20px;
+        border-right: 1px solid var(--table-row-border);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        max-width: calc(100vw / var(--visible-column-count));
+
+        &:last-of-type {
+          border-right: none;
+        }
+      }
+    }
+  }
+}
+
+#network-toolbar {
+  background-color: var(--network-toolbar);
+  border-bottom: 1px solid var(--table-row-border);
+  padding: 2px;
+
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    > img {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
+.network-table-subtle {
+  color: var(--network-table-subtle);
+}
+
+abbr.network-table-subtle {
+  text-decoration: none;
+}
+
+.network-error-row {
+  color: var(--network-error-row);
+}
+
+
+dialog {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 .5rem;
+  border: none;
+  width: 100%;
+  max-width: var(--max-content-width);
+  box-shadow: var(--shadow);
+  padding: .5rem;
+  background-color: var(--table-head);
+  color: #fff;
+  flex-direction: column;
+
+  &[open] {
+    display: flex;
+  }
+
+  > .dialog-header {
+    display: flex;
+
+    > h2 {
+      font-weight: normal;
+    }
+
+    > .dialog-close {
+      appearance: none;
+      background-color: transparent;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+      margin-left: auto;
+      transition: 200ms;
+
+      &:hover {
+        opacity: .5;
+      }
+    }
+  }
+
+  > .dialog-content {
+    > .repeatRequestUrlWrapper {
+        display: flex;
+
+        > select, input {
+          appearance: none;
+          color: #fff;
+          background-color: var(--table-even);
+          border: 2px solid var(--table-row-border);
+          padding: .6rem;
+          margin: 0;
+          font-size: 1rem;
+
+          &:focus {
+            outline: none;
+            background-color: transparent;
+          }
+        }
+
+      > select {
+        border-right: none;
+        margin-right: -4px;
+      }
+
+      > input {
+        flex: 1;
+      }
+    }
+
+    > .repeatRequestPanelWrapper {
+      display: flex;
+      flex-direction: column;
+      margin: 1.5rem 0 .5rem 0;
+
+      > .repeatRequestPanelHeader {
+        margin-bottom: .75rem;
+
+        > button {
+          appearance: none;
+          padding: .5rem;
+          font-size: .9rem;
+          border: none;
+          background-color: transparent;
+          color: #fff;
+          cursor: pointer;
+
+          &:not(:last-of-type) {
+            margin-right: .75rem;
+          }
+
+          &.is-active {
+            border-bottom: 3px solid var(--table-row-border);
+          }
+        }
+      }
+
+      > .repeatRequestPanel {
+        > div[data-panel-id] {
+          display: none;
+          font-size: .9rem;
+
+          &.is-active {
+            display: initial;
+          }
+
+          > table {
+            width: 100%;
+            height: 100%;
+            max-height: 45rem;
+            border: 2px solid var(--table-row-border);
+            border-collapse: collapse;
+            font-size: inherit;
+            margin: 0;
+
+            tr {
+              transition: 200ms;
+
+              > td, th {
+                border: 2px solid var(--table-row-border);
+                text-align: left;
+
+                > input {
+                  appearance: none;
+                  border: none;
+                  background-color: transparent;
+                  padding: .5rem;
+                  font-size: inherit;
+                  color: #fff;
+                  width: 100%;
+
+                  &:focus {
+                    outline: none;
+                  }
+                }
+              }
+
+              &:focus-within {
+                border-color: #fff;
+              }
+
+              > th {
+                padding: .5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
