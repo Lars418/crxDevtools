@@ -27,9 +27,6 @@
   "repeatRequestDialogUrl": {
     "message": "Enter request URL"
   },
-  "repeatRequestDialogPanelParams": {
-    "message": "Params"
-  },
   "repeatRequestDialogPanelAuthorization": {
     "message": "Authorization"
   },
@@ -44,6 +41,42 @@
   },
   "repeatRequestDialogValue": {
     "message": "VALUE"
+  },
+  "repeatRequestAuthorizationTypeLabel": {
+    "message": "Type"
+  },
+  "repeatRequestAuthorizationTypeNone": {
+    "message": "This request does not use any authorization."
+  },
+  "repeatRequestAuthorizationTypeApiKeyValueLabel": {
+    "message": "Value"
+  },
+  "repeatRequestAuthorizationTypeApiKeyKeyLabel": {
+    "message": "Key"
+  },
+  "repeatRequestAuthorizationTypeBearerTokenLabel": {
+    "message": "Token"
+  },
+  "repeatRequestAuthorizationTypeBasicAuthUsernameLabel": {
+    "message": "Username"
+  },
+  "repeatRequestAuthorizationTypeBasicAuthPasswordLabel": {
+    "message": "Password"
+  },
+  "repeatRequestAuthorizationTypeBasicAuthShowPasswordLabel": {
+    "message": "Show password"
+  },
+  "authorizationType_none": {
+    "message": "None"
+  },
+  "authorizationType_apiKey": {
+    "message": "API Key"
+  },
+  "authorizationType_bearerToken": {
+    "message": "Bearer Token"
+  },
+  "authorizationType_basicAuth": {
+    "message": "Basic Auth"
   },
   "dialogClose": {
     "message": "Close dialog"

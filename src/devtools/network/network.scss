@@ -125,6 +125,10 @@ dialog {
     display: flex;
   }
 
+  &::backdrop {
+    background-color: rgba(0, 0, 0, .42);
+  }
+
   > .dialog-header {
     display: flex;
 
@@ -149,17 +153,16 @@ dialog {
   }
 
   > .dialog-content {
+
     > .repeatRequestUrlWrapper {
         display: flex;
 
         > select, input {
-          appearance: none;
           color: #fff;
           background-color: var(--table-even);
           border: 2px solid var(--table-row-border);
           padding: .6rem;
           margin: 0;
-          font-size: 1rem;
 
           &:focus {
             outline: none;
@@ -167,14 +170,31 @@ dialog {
           }
         }
 
-      > select {
-        border-right: none;
-        margin-right: -4px;
-      }
+        > select {
+          border-right: none;
+          font-size: .9rem;
+          font-weight: bold;
+          position: relative;
 
-      > input {
-        flex: 1;
-      }
+          &::after {
+            content: '';
+            position: absolute;
+            right: .25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            color: #fff;
+            background-image: url('../../img/icon/chevron-down.svg');
+            background-repeat: no-repeat;
+            background-size: contain;
+          }
+        }
+
+        > input {
+          appearance: none;
+          flex: 1;
+        }
     }
 
     > .repeatRequestPanelWrapper {
@@ -215,8 +235,6 @@ dialog {
 
           > table {
             width: 100%;
-            height: 100%;
-            max-height: 45rem;
             border: 2px solid var(--table-row-border);
             border-collapse: collapse;
             font-size: inherit;
@@ -250,6 +268,113 @@ dialog {
 
               > th {
                 padding: .5rem;
+              }
+            }
+          }
+
+          &[data-panel-id="Authorization"] {
+            &.is-active {
+              display: flex;
+            }
+
+            > .repeatRequestAuthorizationTypeWrapper {
+              display: flex;
+              border-right: 1px solid var(--table-row-border);
+              margin-left: .5rem;
+              padding-right: 1.25rem;
+
+              > select {
+                border: 2px solid var(--table-row-border);
+                background-color: transparent;
+                padding: .5rem;
+                height: 35px;
+                color: #fff;
+              }
+
+              label {
+                margin-right: 1rem;
+                height: 35px;
+                line-height: 35px;
+              }
+            }
+
+            > .repeatRequestAuthorizationTypeValueWrapper {
+              padding-left: 1.25rem;
+              width: 100%;
+              height: 12.5rem;
+
+              > [data-authorization-id] {
+                display: none;
+
+                &.is-active {
+                  display: flex;
+                }
+
+                &[data-authorization-id="apiKey"], &[data-authorization-id="bearerToken"], &[data-authorization-id="basicAuth"] {
+                  flex-direction: column;
+
+                  > div {
+                    display: flex;
+                    align-items: center;
+                    margin: .5rem 1.25rem .5rem 0;
+
+                    > label {
+                      margin-right: .75rem;
+                      width: 6rem;
+                    }
+
+                    > input:not([type="checkbox"]) {
+                      width: 100%;
+                      appearance: none;
+                      padding: .5rem;
+                      background-color: transparent;
+                      border: 2px solid var(--table-row-border);
+                      transition: border-color 200ms;
+                      color: #fff;
+
+                      &:focus {
+                        outline: none;
+                        border-color: #fff;
+                      }
+                    }
+
+                    &.checkbox-wrapper {
+                      > label {
+                        width: 100%;
+                      }
+
+                      > input {
+                        display: inline-block;
+                        appearance: none;
+                        margin-right: .75rem;
+                        margin-left: 6rem;
+                        width: 1rem;
+                        height: 1rem;
+                        background-color: transparent;
+                        border: 2px solid var(--table-row-border);
+                        position: relative;
+
+                        &::after {
+                          position: absolute;
+                          content: '✕';
+                          top: 50%;
+                          left: 70%;
+                          transform: translate(-50%, -50%);
+                          width: 1rem;
+                          height: 1rem;
+                          font-size: .8rem;
+                          color: #fff;
+                          opacity: 0;
+                          transition: 200ms;
+                        }
+
+                        &:checked::after {
+                          opacity: 1;
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }

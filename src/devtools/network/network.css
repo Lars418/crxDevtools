@@ -1,3 +1,4 @@
+@charset "UTF-8";
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -111,6 +112,9 @@ dialog {
 dialog[open] {
   display: flex;
 }
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.42);
+}
 dialog > .dialog-header {
   display: flex;
 }
@@ -134,13 +138,11 @@ dialog > .dialog-content > .repeatRequestUrlWrapper {
   display: flex;
 }
 dialog > .dialog-content > .repeatRequestUrlWrapper > select, dialog > .dialog-content > .repeatRequestUrlWrapper input {
-  appearance: none;
   color: #fff;
   background-color: var(--table-even);
   border: 2px solid var(--table-row-border);
   padding: 0.6rem;
   margin: 0;
-  font-size: 1rem;
 }
 dialog > .dialog-content > .repeatRequestUrlWrapper > select:focus, dialog > .dialog-content > .repeatRequestUrlWrapper input:focus {
   outline: none;
@@ -148,9 +150,25 @@ dialog > .dialog-content > .repeatRequestUrlWrapper > select:focus, dialog > .di
 }
 dialog > .dialog-content > .repeatRequestUrlWrapper > select {
   border-right: none;
-  margin-right: -4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  position: relative;
+}
+dialog > .dialog-content > .repeatRequestUrlWrapper > select::after {
+  content: "";
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: #fff;
+  background-image: url("../../img/icon/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 dialog > .dialog-content > .repeatRequestUrlWrapper > input {
+  appearance: none;
   flex: 1;
 }
 dialog > .dialog-content > .repeatRequestPanelWrapper {
@@ -185,8 +203,6 @@ dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > di
 }
 dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table {
   width: 100%;
-  height: 100%;
-  max-height: 45rem;
   border: 2px solid var(--table-row-border);
   border-collapse: collapse;
   font-size: inherit;
@@ -216,6 +232,93 @@ dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > di
 }
 dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id] > table tr > th {
   padding: 0.5rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization].is-active {
+  display: flex;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeWrapper {
+  display: flex;
+  border-right: 1px solid var(--table-row-border);
+  margin-left: 0.5rem;
+  padding-right: 1.25rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeWrapper > select {
+  border: 2px solid var(--table-row-border);
+  background-color: transparent;
+  padding: 0.5rem;
+  height: 35px;
+  color: #fff;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeWrapper label {
+  margin-right: 1rem;
+  height: 35px;
+  line-height: 35px;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper {
+  padding-left: 1.25rem;
+  width: 100%;
+  height: 12.5rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id] {
+  display: none;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id].is-active {
+  display: flex;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey], dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken], dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] {
+  flex-direction: column;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 1.25rem 0.5rem 0;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div > label, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div > label, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div > label {
+  margin-right: 0.75rem;
+  width: 6rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div > input:not([type=checkbox]), dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div > input:not([type=checkbox]), dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div > input:not([type=checkbox]) {
+  width: 100%;
+  appearance: none;
+  padding: 0.5rem;
+  background-color: transparent;
+  border: 2px solid var(--table-row-border);
+  transition: border-color 200ms;
+  color: #fff;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div > input:not([type=checkbox]):focus, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div > input:not([type=checkbox]):focus, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div > input:not([type=checkbox]):focus {
+  outline: none;
+  border-color: #fff;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div.checkbox-wrapper > label, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div.checkbox-wrapper > label, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div.checkbox-wrapper > label {
+  width: 100%;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div.checkbox-wrapper > input, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div.checkbox-wrapper > input, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div.checkbox-wrapper > input {
+  display: inline-block;
+  appearance: none;
+  margin-right: 0.75rem;
+  margin-left: 6rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: transparent;
+  border: 2px solid var(--table-row-border);
+  position: relative;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div.checkbox-wrapper > input::after, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div.checkbox-wrapper > input::after, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div.checkbox-wrapper > input::after {
+  position: absolute;
+  content: "✕";
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.8rem;
+  color: #fff;
+  opacity: 0;
+  transition: 200ms;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=apiKey] > div.checkbox-wrapper > input:checked::after, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=bearerToken] > div.checkbox-wrapper > input:checked::after, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Authorization] > .repeatRequestAuthorizationTypeValueWrapper > [data-authorization-id][data-authorization-id=basicAuth] > div.checkbox-wrapper > input:checked::after {
+  opacity: 1;
 }
 
 /*# sourceMappingURL=network.css.map */

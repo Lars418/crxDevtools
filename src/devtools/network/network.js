@@ -257,9 +257,11 @@ async function repeatRequest(requestData) {
 function initRepeatRequestDialog() {
     const repeatRequestCloseBtn = document.querySelector('.dialog-close');
     const repeatRequestPanelHeader = document.querySelector('.repeatRequestPanelHeader');
-    const repeatRequestPanel = document.querySelector('.repeatRequestPanel');
+    const repeatRequestAuthorizationType = document.getElementById('repeatRequestAuthorizationType');
+    const repeatRequestAuthorizationTypeValueWrapper = document.querySelector('.repeatRequestAuthorizationTypeValueWrapper');
     const availableMethods = [ 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND', 'VIEW' ];
-    const availablePanels = [ 'Params', 'Authorization', 'Headers', 'Body' ];
+    const availablePanels = [ 'Authorization', 'Headers', 'Body' ];
+    const availableAuthorizationTypes = [ 'none', 'apiKey', 'bearerToken', 'basicAuth' ];
 
     repeatRequestCloseBtn.addEventListener('click', () => repeatRequestDialog.close());
 
@@ -278,9 +280,9 @@ function initRepeatRequestDialog() {
         button.textContent = getMessage(`repeatRequestDialogPanel${panel}`);
         button.classList.add('repeatRequestPanelDialogPanelButton');
 
-        if (panel === 'Params') {
+        if (panel === 'Authorization') {
             button.classList.add('is-active');
-            document.querySelector('div[data-panel-id="Params"]').classList.add('is-active');
+            document.querySelector('div[data-panel-id="Authorization"]').classList.add('is-active');
         }
 
         button.addEventListener('click', () => {
@@ -292,6 +294,18 @@ function initRepeatRequestDialog() {
 
         repeatRequestPanelHeader.appendChild(button);
     });
+
+    availableAuthorizationTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = getMessage(`authorizationType_${type}`);
+        repeatRequestAuthorizationType.appendChild(option);
+    });
+
+    repeatRequestAuthorizationType.addEventListener('change', () => {
+        repeatRequestAuthorizationTypeValueWrapper.querySelector('div[data-authorization-id].is-active')?.classList?.remove('is-active');
+        repeatRequestAuthorizationTypeValueWrapper.querySelector(`div[data-authorization-id="${repeatRequestAuthorizationType.value}"]`)?.classList?.add('is-active');
+    });
 }
 
 function openRepeatRequestDialog(requestData) {
@@ -299,9 +313,11 @@ function openRepeatRequestDialog(requestData) {
 
     repeatRequestDialogMethod.value = requestData?.request?.method;
     repeatRequestDialogUrl.value = requestData?.request?.url ?? '';
-    requestData.request.headers.filter(x => !x.name.startsWith(':')).forEach(header => {
+    clearInputTable('Headers');
+    requestData.request?.headers.filter(x => !x.name.startsWith(':')).forEach(header => {
         createInputTableEntry('Headers', header.name, header.value);
-    })
+    });
+    createInputTableEntry('Headers', '', '');
     REPEAT_REQUEST_DIALOG.showModal();
 }
 
@@ -314,18 +330,25 @@ function createInputTableEntry(panelId, key, value) {
                 type="text"
                 value="${key}"
                 spellcheck="false"
+                placeholder="${getMessage('repeatRequestDialogKey')}"
             >
         </td>
         <td>
             <input
-            type="text"
-            value="${value}"
-            spellcheck="false"
+                type="text"
+                value="${value}"
+                spellcheck="false"
+                placeholder="${getMessage('repeatRequestDialogValue')}"
             >
         </td>
     `;
 
     tableBody.appendChild(tr);
+}
+
+function clearInputTable(panelId) {
+    const tableBody = document.querySelector(`div[data-panel-id="${panelId}"] tbody`);
+    tableBody.textContent = '';
 }
 
 // endregion

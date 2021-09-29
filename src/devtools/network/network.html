@@ -57,9 +57,95 @@
             <div class="repeatRequestPanelWrapper">
                 <div class="repeatRequestPanelHeader"></div>
                 <div class="repeatRequestPanel">
-                    <div data-panel-id="Params"></div>
+                    <div data-panel-id="Authorization">
+                        <div class="repeatRequestAuthorizationTypeWrapper">
+                            <label for="repeatRequestAuthorizationType" data-intl="repeatRequestAuthorizationTypeLabel"></label>
+                            <select id="repeatRequestAuthorizationType">
 
-                    <div data-panel-id="Authorization"></div>
+                            </select>
+                        </div>
+
+                        <div class="repeatRequestAuthorizationTypeValueWrapper">
+                            <div data-authorization-id="none" class="is-active">
+                                <p data-intl="repeatRequestAuthorizationTypeNone"></p>
+                            </div>
+
+                            <div data-authorization-id="apiKey">
+
+                                <div>
+                                    <label for="repeatRequestAuthorizationTypeApiKeyValue" data-intl="repeatRequestAuthorizationTypeApiKeyKeyLabel"></label>
+                                    <input
+                                            type="text"
+                                            spellcheck="false"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            id="repeatRequestAuthorizationTypeApiKeyValue"
+                                            data-intl-placeholder="repeatRequestAuthorizationTypeApiKeyKeyLabel"
+                                    >
+                                </div>
+
+                                <div>
+                                    <label for="repeatRequestAuthorizationTypeApiKeyKey" data-intl="repeatRequestAuthorizationTypeApiKeyValueLabel"></label>
+                                    <input
+                                            type="text"
+                                            spellcheck="false"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            id="repeatRequestAuthorizationTypeApiKeyKey"
+                                            data-intl-placeholder="repeatRequestAuthorizationTypeApiKeyValueLabel"
+                                    >
+                                </div>
+                            </div>
+
+                            <div data-authorization-id="bearerToken">
+                                <div>
+                                    <label for="repeatRequestAuthorizationTypeBearerToken" data-intl="repeatRequestAuthorizationTypeBearerTokenLabel"></label>
+                                    <input
+                                            type="text"
+                                            spellcheck="false"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            id="repeatRequestAuthorizationTypeBearerToken"
+                                            data-intl-placeholder="repeatRequestAuthorizationTypeBearerTokenLabel"
+                                    >
+                                </div>
+                            </div>
+
+                            <div data-authorization-id="basicAuth">
+                                <div>
+                                    <label for="repeatRequestAuthorizationTypeBasicAuthUsername" data-intl="repeatRequestAuthorizationTypeBasicAuthUsernameLabel"></label>
+                                    <input
+                                            type="text"
+                                            spellcheck="false"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            id="repeatRequestAuthorizationTypeBasicAuthUsername"
+                                            data-intl-placeholder="repeatRequestAuthorizationTypeBasicAuthUsernameLabel"
+                                    >
+                                </div>
+
+                                <div>
+                                    <label for="repeatRequestAuthorizationTypeBasicAuthPassword" data-intl="repeatRequestAuthorizationTypeBasicAuthPasswordLabel"></label>
+                                    <input
+                                            type="password"
+                                            spellcheck="false"
+                                            autocapitalize="off"
+                                            autocomplete="off"
+                                            id="repeatRequestAuthorizationTypeBasicAuthPassword"
+                                            data-intl-placeholder="repeatRequestAuthorizationTypeBasicAuthPasswordLabel"
+                                    >
+                                </div>
+
+                                <div class="checkbox-wrapper">
+                                    <input
+                                        type="checkbox"
+                                        id="repeatRequestAuthorizationTypeBasicAuthShowPassword"
+                                    >
+                                    <label for="repeatRequestAuthorizationTypeBasicAuthShowPassword" data-intl="repeatRequestAuthorizationTypeBasicAuthShowPasswordLabel"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div data-panel-id="Headers">
                         <table class="input-table" data-table-id="headers-table">
