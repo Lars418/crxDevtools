@@ -1,6 +1,7 @@
 // region vars
 const REQUEST_TABLE_WRAPPER = document.getElementById('requestTableWrapper');
 const BTN_CLEAR_REQUESTS = document.getElementById('btnClearRequests');
+const BTN_REPEAT_REQUEST = document.getElementById('btnRepeatRequest');
 const REPEAT_REQUEST_DIALOG = document.getElementById('repeatRequestDialog');
 const repeatRequestDialogUrl = document.getElementById('repeatRequestDialogUrl');
 const repeatRequestDialogMethod = document.getElementById('repeatRequestDialogMethod');
@@ -38,6 +39,12 @@ const menuItemMapping = {
     chrome.devtools.network.onRequestFinished.addListener(appendRequest);
     chrome.devtools.network.onNavigated.addListener(clearRequests);
     BTN_CLEAR_REQUESTS.addEventListener('click', clearRequests.bind(null, true));
+    BTN_REPEAT_REQUEST.addEventListener('click', () => {
+        const selectedRequest = REQUEST_TABLE.getSelectedRequest();
+        const requestData = JSON.parse(selectedRequest.dataset.request);
+
+        openRepeatRequestDialog(requestData);
+    });
 
     const COLUMNS = [
         {
@@ -207,15 +214,15 @@ function initContextMenuListener() {
     })
 }
 
-
 // region utils
 function appendRequest(requestData) {
     REQUEST_TABLE.addRequest(requestData);
+    REQUEST_TABLE.rerenderRequests();
 }
 
 function clearRequests(forceClear=false) {
     if (forceClear || localStorage.getItem('preserveLog') === 'false') {
-        REQUEST_TABLE.clearEntries();
+        REQUEST_TABLE.clearRequests();
     }
 }
 

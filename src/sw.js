@@ -12,7 +12,6 @@ chrome.runtime.onStartup.addListener(() => {
     initContextMenu();
 });
 
-
 function initContextMenu() {
     chrome.contextMenus.create({
         id: '1',

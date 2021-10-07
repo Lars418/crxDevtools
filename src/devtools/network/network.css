@@ -26,6 +26,7 @@ html, body {
   background-color: var(--table-head);
 }
 #requestTableWrapper > table > thead > tr > th {
+  color: var(--network-table-subtle);
   line-height: 1.5rem;
   height: 1.5rem;
   border-right: 1px solid var(--table-row-border);
@@ -39,6 +40,7 @@ html, body {
 }
 #requestTableWrapper > table > tbody > tr {
   background-color: var(--table-odd);
+  transition: 100ms;
   border: none;
 }
 #requestTableWrapper > table > tbody > tr:nth-child(even) {
@@ -47,7 +49,15 @@ html, body {
 #requestTableWrapper > table > tbody > tr:hover {
   background-color: var(--network-row-hover);
 }
+#requestTableWrapper > table > tbody > tr.network-row-selected {
+  background-color: var(--network-row-selected);
+}
+#requestTableWrapper > table > tbody > tr.network-row-selected.network-error-row {
+  background-color: var(--network-row-selected-error);
+}
 #requestTableWrapper > table > tbody > tr > td {
+  color: var(--network-table-subtle);
+  font-size: var(--network-table-font-size);
   padding: 1px 4px;
   height: 20px;
   border-right: 1px solid var(--table-row-border);
@@ -60,11 +70,16 @@ html, body {
 #requestTableWrapper > table > tbody > tr > td:last-of-type {
   border-right: none;
 }
+#requestTableWrapper > table > tbody > tr.network-error-row > td {
+  color: var(--network-error-row);
+}
 
 #network-toolbar {
+  display: flex;
+  align-items: center;
   background-color: var(--network-toolbar);
   border-bottom: 1px solid var(--table-row-border);
-  padding: 2px;
+  height: 26px;
 }
 #network-toolbar button {
   -webkit-appearance: none;
@@ -76,10 +91,30 @@ html, body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin: 0 0.5rem;
 }
 #network-toolbar button > img {
   width: 1rem;
   height: 1rem;
+  opacity: 0.75;
+  transition: 200ms;
+}
+#network-toolbar button > img:hover {
+  opacity: 1;
+}
+#network-toolbar button:disabled {
+  cursor: not-allowed;
+}
+#network-toolbar button:disabled > img {
+  opacity: 0.45;
+}
+#network-toolbar button:disabled > img:hover {
+  opacity: 0.45;
+}
+#network-toolbar .toolbar-divider {
+  width: 1px;
+  background-color: var(--table-row-border);
+  height: 70%;
 }
 
 .network-table-subtle {
@@ -90,16 +125,12 @@ abbr.network-table-subtle {
   text-decoration: none;
 }
 
-.network-error-row {
-  color: var(--network-error-row);
-}
-
 dialog {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin: 0 0.5rem;
+  margin: 0;
   border: none;
   width: 100%;
   max-width: var(--max-content-width);

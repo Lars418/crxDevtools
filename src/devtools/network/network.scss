@@ -26,6 +26,7 @@ html, body {
       background-color: var(--table-head);
 
       > th {
+        color: var(--network-table-subtle);
         line-height: 1.5rem;
         height: 1.5rem;
         border-right: 1px solid var(--table-row-border);
@@ -43,6 +44,7 @@ html, body {
   > tbody {
     > tr {
       background-color: var(--table-odd);
+      transition: 100ms;
       border: none;
 
       &:nth-child(even) {
@@ -53,7 +55,17 @@ html, body {
         background-color: var(--network-row-hover);
       }
 
+      &.network-row-selected {
+        background-color: var(--network-row-selected);
+
+        &.network-error-row {
+          background-color: var(--network-row-selected-error);
+        }
+      }
+
       > td {
+        color: var(--network-table-subtle);
+        font-size: var(--network-table-font-size);
         padding: 1px 4px;
         height: 20px;
         border-right: 1px solid var(--table-row-border);
@@ -67,14 +79,20 @@ html, body {
           border-right: none;
         }
       }
+
+      &.network-error-row > td {
+        color: var(--network-error-row);
+      }
     }
   }
 }
 
 #network-toolbar {
+  display: flex;
+  align-items: center;
   background-color: var(--network-toolbar);
   border-bottom: 1px solid var(--table-row-border);
-  padding: 2px;
+  height: 26px;
 
   button {
     -webkit-appearance: none;
@@ -86,11 +104,36 @@ html, body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    margin: 0 .5rem;
 
     > img {
       width: 1rem;
       height: 1rem;
+      opacity: .75;
+      transition: 200ms;
+
+      &:hover {
+        opacity: 1;
+      }
     }
+
+    &:disabled {
+      cursor: not-allowed;
+
+      > img {
+        opacity: .45;
+
+        &:hover {
+          opacity: .45;
+        }
+      }
+    }
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    background-color: var(--table-row-border);
+    height: 70%;
   }
 }
 
@@ -102,16 +145,12 @@ abbr.network-table-subtle {
   text-decoration: none;
 }
 
-.network-error-row {
-  color: var(--network-error-row);
-}
-
 
 dialog {
   position: fixed;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  margin: 0 .5rem;
+  margin: 0;
   border: none;
   width: 100%;
   max-width: var(--max-content-width);

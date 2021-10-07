@@ -62,8 +62,10 @@ const STATUS_CODE = Object.freeze({
 });
 
 function getFormattedSize(requestData) {
-    const size = requestData.response?._transferSize;
+    const transferSize = requestData.response?._transferSize;
     const fromCache = requestData._fromCache;
+
+    // TODO use this: https://github.com/ChromeDevTools/devtools-frontend/blob/04d4b64221e472bcbd5d1de16bef59c2cb9f8d02/front_end/core/sdk/NetworkRequest.ts#L638
 
     if (fromCache) {
         return (
@@ -75,24 +77,47 @@ function getFormattedSize(requestData) {
         );
     }
 
-    if (!size) {
+    if (!transferSize) {
         return '0 B';
-    } else if (size < 1000) {
-        return `${size} B`;
+    } else if (transferSize < 1000) {
+        return `${transferSize} B`;
     } else {
-        return `${(size / 1000).toFixed(1)} kB`;
+        return `${(transferSize / 1000).toFixed(1)} kB`;
     }
 
 }
 
-function getFormattedTime(time) {
-    if (!time) {
-        return null;
+/** Slightly modified version from
+ * https://github.com/ChromeDevTools/devtools-frontend/blob/04d4b64221e472bcbd5d1de16bef59c2cb9f8d02/front_end/core/i18n/time-utilities.ts#L48
+ * */
+function getFormattedTime(ms) {
+    if (!isFinite(ms)) {
+        return '-';
     }
 
-    if (time > 1000) {
-        return `${(time / 1000).toFixed(2)} s`;
+    if (ms === 0) {
+        return '0';
     }
 
-    return `${time} ms`;
+    if (ms < 1000) {
+        return `${ms.toFixed(0)} ms`;
+    }
+
+    const seconds = ms / 1000;
+    if (seconds < 60) {
+        return `${seconds.toFixed(2)} s`;
+    }
+
+    const minutes = seconds / 60;
+    if (minutes < 60) {
+        return `${minutes.toFixed(1)} min`;
+    }
+
+    const hours = minutes / 60;
+    if (hours < 24) {
+        return `${hours.toFixed(1)} hrs`;
+    }
+
+    const days = hours / 24;
+    return `${days.toFixed(1)} days`;
 }
