@@ -6,6 +6,8 @@ const REPEAT_REQUEST_DIALOG = document.getElementById('repeatRequestDialog');
 const repeatRequestDialogUrl = document.getElementById('repeatRequestDialogUrl');
 const repeatRequestDialogMethod = document.getElementById('repeatRequestDialogMethod');
 const repeatRequestDialog = document.getElementById('repeatRequestDialog');
+const repeatRequestAuthorizationType = document.getElementById('repeatRequestAuthorizationType');
+const repeatRequestAuthorizationTypeValueWrapper = document.querySelector('.repeatRequestAuthorizationTypeValueWrapper');
 const BLOCK_TAB = chrome.devtools.panels.themeName !== 'dark';
 const { getMessage } = chrome.i18n;
 const MOUSE_POSITION = {
@@ -145,7 +147,7 @@ const menuItemMapping = {
             data: row => row?._initiator?.type,
             render: cell => {
                 if (cell === 'other') {
-                    return `<span class="network-table-subtle">Other</span>`;
+                    return `<span class="network-table-subtle-2">Other</span>`;
                 }
 
                 return cell;
@@ -234,7 +236,7 @@ async function repeatRequest(requestData) {
         _initiator: {
             type: `
                 <abbr
-                    class="network-table-initiator"
+                    class="network-table-initiator network-table-subtle-2"
                     title="${getMessage('extensionName')}"
                 >
                     ${getMessage('extensionShortName')}
@@ -262,15 +264,19 @@ async function repeatRequest(requestData) {
 }
 
 function initRepeatRequestDialog() {
-    const repeatRequestCloseBtn = document.querySelector('.dialog-close');
+    const repeatRequestCloseBtns = document.querySelectorAll('.dialog-close');
     const repeatRequestPanelHeader = document.querySelector('.repeatRequestPanelHeader');
-    const repeatRequestAuthorizationType = document.getElementById('repeatRequestAuthorizationType');
-    const repeatRequestAuthorizationTypeValueWrapper = document.querySelector('.repeatRequestAuthorizationTypeValueWrapper');
+    const basicAuthPasswordInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthPassword');
+    const basicAuthPasswordCheckbox = document.getElementById('repeatRequestAuthorizationTypeBasicAuthShowPassword');
+    const repeatRequestBodyType = document.getElementById('repeatRequestBodyType');
+    const repeatRequestBodyRawType = document.getElementById('repeatRequestBodyRawType');
     const availableMethods = [ 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND', 'VIEW' ];
     const availablePanels = [ 'Authorization', 'Headers', 'Body' ];
     const availableAuthorizationTypes = [ 'none', 'apiKey', 'bearerToken', 'basicAuth' ];
+    const availableBodyTypes = [ 'none', 'formData', 'xWwwFormUrlencoded', 'raw', 'binary', 'graphQl' ];
+    const availableBodyRawTypes = [ 'text', 'js', 'json', 'html', 'xml' ];
 
-    repeatRequestCloseBtn.addEventListener('click', () => repeatRequestDialog.close());
+    repeatRequestCloseBtns.forEach(btn => btn.addEventListener('click', () => repeatRequestDialog.close()))
 
     repeatRequestDialogUrl.setAttribute('placeholder', getMessage('repeatRequestDialogUrl'));
 
@@ -309,9 +315,40 @@ function initRepeatRequestDialog() {
         repeatRequestAuthorizationType.appendChild(option);
     });
 
+    availableBodyTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = getMessage(`bodyType_${type}`);
+        repeatRequestBodyType.appendChild(option);
+    });
+
+    availableBodyRawTypes.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = getMessage(`bodyRawType_${type}`);
+        repeatRequestBodyRawType.appendChild(option);
+    });
+
     repeatRequestAuthorizationType.addEventListener('change', () => {
         repeatRequestAuthorizationTypeValueWrapper.querySelector('div[data-authorization-id].is-active')?.classList?.remove('is-active');
         repeatRequestAuthorizationTypeValueWrapper.querySelector(`div[data-authorization-id="${repeatRequestAuthorizationType.value}"]`)?.classList?.add('is-active');
+    });
+
+    basicAuthPasswordCheckbox.addEventListener('change', () => {
+        const type = basicAuthPasswordInput.getAttribute('type');
+        if (type === 'password') {
+            basicAuthPasswordInput.setAttribute('type', 'text');
+        } else {
+            basicAuthPasswordInput.setAttribute('type', 'password');
+        }
+    });
+
+    repeatRequestBodyType.addEventListener('change', () => {
+        if (repeatRequestBodyType.value === 'raw') {
+            repeatRequestBodyRawType.parentElement.style.display = 'flex';
+        } else {
+            repeatRequestBodyRawType.parentElement.style.display = 'none';
+        }
     });
 }
 
@@ -325,6 +362,13 @@ function openRepeatRequestDialog(requestData) {
         createInputTableEntry('Headers', header.name, header.value);
     });
     createInputTableEntry('Headers', '', '');
+
+    const auth = getAuthorization(requestData);
+    setAuthorizationValue(auth.type, auth.value);
+    repeatRequestAuthorizationType.value = auth.type;
+    repeatRequestAuthorizationTypeValueWrapper.querySelector('div[data-authorization-id].is-active')?.classList?.remove('is-active');
+    repeatRequestAuthorizationTypeValueWrapper.querySelector(`div[data-authorization-id="${repeatRequestAuthorizationType.value}"]`)?.classList?.add('is-active');
+
     REPEAT_REQUEST_DIALOG.showModal();
 }
 
@@ -334,21 +378,37 @@ function createInputTableEntry(panelId, key, value) {
     tr.innerHTML = `
         <td>
             <input
+                type="checkbox"
+                checked="checked"
+                title="${getMessage('repeatRequestDialogEnableDisableHeaderTitle')}"
+            >
+        </td>
+        <td>
+            <input
                 type="text"
                 value="${key}"
                 spellcheck="false"
                 placeholder="${getMessage('repeatRequestDialogKey')}"
             >
         </td>
-        <td>
-            <input
-                type="text"
-                value="${value}"
-                spellcheck="false"
-                placeholder="${getMessage('repeatRequestDialogValue')}"
-            >
+        <td class="input-table-last">
+            <div>
+                <input
+                    type="text"
+                    value="${value}"
+                    spellcheck="false"
+                    placeholder="${getMessage('repeatRequestDialogValue')}"
+                >
+                <button title="${getMessage('repeatRequestDialogRemoveHeader')}">
+                    &times;
+                </button>
+            </div>
         </td>
     `;
+
+    const removeHeaderBtn = tr.querySelector('button');
+
+    removeHeaderBtn.addEventListener('click', () => removeInputTableEntry('Headers', tr));
 
     tableBody.appendChild(tr);
 }
@@ -356,6 +416,39 @@ function createInputTableEntry(panelId, key, value) {
 function clearInputTable(panelId) {
     const tableBody = document.querySelector(`div[data-panel-id="${panelId}"] tbody`);
     tableBody.textContent = '';
+}
+
+function removeInputTableEntry(panelId, entry) {
+    const tableBody = document.querySelector(`div[data-panel-id="${panelId}"] tbody`);
+
+    tableBody.removeChild(entry);
+}
+
+function setAuthorizationValue(type, value) {
+    const apiKeyKeyInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyKey');
+    const apiKeyValueInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyValue');
+    const bearerTokenInput = document.getElementById('repeatRequestAuthorizationTypeBearerToken');
+    const basicAuthUsernameInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthUsername');
+    const basicAuthPasswordInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthPassword');
+
+    [apiKeyKeyInput, apiKeyValueInput, bearerTokenInput, basicAuthPasswordInput, basicAuthUsernameInput].forEach(input => {
+        input.value = '';
+    });
+
+    if (type === 'apiKey') {
+        if (value.includes('=')) {
+            const [apiKey, apiValue] = value.split('=');
+            apiKeyKeyInput.value = apiKey;
+            apiKeyValueInput.value = apiValue;
+        } else {
+            apiKeyValueInput.value = value;
+        }
+    } else if (type === 'bearerToken') {
+        bearerTokenInput.value = value;
+    } else if (type === 'basicAuth') {
+        basicAuthUsernameInput.value = value.username;
+        basicAuthPasswordInput.value = value.password;
+    }
 }
 
 // endregion

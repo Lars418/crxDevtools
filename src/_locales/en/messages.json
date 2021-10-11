@@ -45,6 +45,12 @@
   "repeatRequestDialogValue": {
     "message": "VALUE"
   },
+  "repeatRequestDialogRemoveHeader": {
+    "message": "Remove header"
+  },
+  "repeatRequestDialogEnableDisableHeaderTitle": {
+    "message": "Enable/disable header"
+  },
   "repeatRequestAuthorizationTypeLabel": {
     "message": "Type"
   },
@@ -80,6 +86,60 @@
   },
   "authorizationType_basicAuth": {
     "message": "Basic Auth"
+  },
+  "repeatRequestBodyPlaceholder": {
+    "message": "Body"
+  },
+  "repeatRequestBodyTypeLabel": {
+    "message": "Type"
+  },
+  "repeatRequestBodyRawTypeLabel": {
+    "message": "Raw type"
+  },
+  "bodyType_none": {
+    "message": "None"
+  },
+  "bodyType_formData": {
+    "message": "form-data"
+  },
+  "bodyType_xWwwFormUrlencoded": {
+    "message": "x-www-form-urlencoded"
+  },
+  "bodyType_raw": {
+    "message": "Raw"
+  },
+  "bodyType_binary": {
+    "message": "Binary"
+  },
+  "bodyType_graphQl": {
+    "message": "GraphQL"
+  },
+  "bodyRawType_text": {
+    "message": "Text"
+  },
+  "bodyRawType_js": {
+    "message": "JavaScript"
+  },
+  "bodyRawType_json": {
+    "message": "JSON"
+  },
+  "bodyRawType_html": {
+    "message": "HTML"
+  },
+  "bodyRawType_xml": {
+    "message": "XML"
+  },
+  "repeatRequestCancelBtn": {
+    "message": "Cancel"
+  },
+  "repeatRequestCancelBtnTitle": {
+    "message": "Cancel request"
+  },
+  "repeatRequestSendBtn": {
+    "message": "Send"
+  },
+  "repeatRequestSendBtnTitle": {
+    "message": "Send request"
   },
   "dialogClose": {
     "message": "Close dialog"

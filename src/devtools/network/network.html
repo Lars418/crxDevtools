@@ -71,7 +71,6 @@
                         <div class="repeatRequestAuthorizationTypeWrapper">
                             <label for="repeatRequestAuthorizationType" data-intl="repeatRequestAuthorizationTypeLabel"></label>
                             <select id="repeatRequestAuthorizationType">
-
                             </select>
                         </div>
 
@@ -89,7 +88,7 @@
                                             spellcheck="false"
                                             autocapitalize="off"
                                             autocomplete="off"
-                                            id="repeatRequestAuthorizationTypeApiKeyValue"
+                                            id="repeatRequestAuthorizationTypeApiKeyKey"
                                             data-intl-placeholder="repeatRequestAuthorizationTypeApiKeyKeyLabel"
                                     >
                                 </div>
@@ -101,7 +100,7 @@
                                             spellcheck="false"
                                             autocapitalize="off"
                                             autocomplete="off"
-                                            id="repeatRequestAuthorizationTypeApiKeyKey"
+                                            id="repeatRequestAuthorizationTypeApiKeyValue"
                                             data-intl-placeholder="repeatRequestAuthorizationTypeApiKeyValueLabel"
                                     >
                                 </div>
@@ -158,24 +157,63 @@
                     </div>
 
                     <div data-panel-id="Headers">
-                        <table class="input-table" data-table-id="headers-table">
-                            <thead>
+                        <div class="headers-table-wrapper">
+                            <table class="input-table" data-table-id="headers-table">
+                                <thead>
                                 <tr>
+                                    <th></th>
                                     <th data-intl="repeatRequestDialogKey"></th>
                                     <th data-intl="repeatRequestDialogValue"></th>
                                 </tr>
-                            </thead>
+                                </thead>
 
-                            <tbody class="panel-content"></tbody>
-                        </table>
+                                <tbody class="panel-content"></tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <div data-panel-id="Body"></div>
+                    <div data-panel-id="Body">
+                        <div class="repeatRequestBodyWrapper">
+                            <div class="repeatRequestBodyTypeWrapper">
+                                <label for="repeatRequestBodyType" data-intl="repeatRequestBodyTypeLabel"></label>
+                                <select id="repeatRequestBodyType">
+                                </select>
+                            </div>
+
+                            <div class="repeatRequestBodyTypeWrapper" style="display: none">
+                                <label for="repeatRequestBodyRawType" data-intl="repeatRequestBodyRawTypeLabel"></label>
+                                <select id="repeatRequestBodyRawType">
+                                </select>
+                            </div>
+                        </div>
+
+                        <textarea
+                                id="repeatRequestBody"
+                                data-intl-placeholder="repeatRequestBodyPlaceholder"
+                        ></textarea>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="dialog-actions">
+            <button
+                id="repeatRequestCancel"
+                data-intl="repeatRequestCancelBtn"
+                data-intl-title="repeatRequestCancelBtnTitle"
+                class="dialog-close"
+            >
+
+            </button>
+
+            <button
+                id="repeatRequestSend"
+                data-intl="repeatRequestSendBtn"
+                data-intl-title="repeatRequestSendBtnTitle"
+                class="primary-button"
+            >
+
+            </button>
         </div>
     </dialog>
 </body>

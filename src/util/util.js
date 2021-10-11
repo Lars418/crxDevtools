@@ -70,7 +70,7 @@ function getFormattedSize(requestData) {
     if (fromCache) {
         return (
             `
-                <span class="network-table-subtle">
+                <span class="network-table-subtle-2">
                    (${fromCache} cache) 
                 </span>
             `
@@ -120,4 +120,42 @@ function getFormattedTime(ms) {
 
     const days = hours / 24;
     return `${days.toFixed(1)} days`;
+}
+
+function getAuthorization(requestData) {
+    const authHeader = requestData.request.headers.map(x => ({ ...x, name: x.name.toLowerCase() })).find(x => x.name === 'authorization');
+    const authValue = authHeader?.value?.split(' ');
+    const authMethod = authValue?.[0]?.toLowerCase();
+
+    if (!authHeader) {
+        return {
+            type: 'none',
+            value: null
+        };
+    }
+
+    if (authMethod === 'basic') {
+        return {
+            type: 'basicAuth',
+            value: decompileBasicAuth(authValue[1])
+        }
+    }
+
+    if (authMethod === 'bearer') {
+        return {
+            type: 'bearerToken',
+            value: authValue[1]
+        }
+    }
+
+    return {
+        type: 'apiKey',
+        value: authHeader?.value
+    };
+}
+
+function decompileBasicAuth(base64String) {
+    const [ username, password ] = atob(base64String).split(':');
+
+    return { username, password };
 }

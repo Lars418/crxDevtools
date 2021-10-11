@@ -9,6 +9,7 @@
   --network-row-selected: #0e639c;
   --network-row-selected-error: rgb(71 36 34);
   --network-table-subtle: rgb(189, 198, 207);
+  --network-table-subtle-2: gray;
   --network-table-font-size: 12px;
   --network-error-row: #ed4e4Ccf;
   --max-content-width: 80rem;
