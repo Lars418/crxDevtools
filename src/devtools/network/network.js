@@ -8,7 +8,11 @@ const repeatRequestDialogMethod = document.getElementById('repeatRequestDialogMe
 const repeatRequestDialog = document.getElementById('repeatRequestDialog');
 const repeatRequestAuthorizationType = document.getElementById('repeatRequestAuthorizationType');
 const repeatRequestAuthorizationTypeValueWrapper = document.querySelector('.repeatRequestAuthorizationTypeValueWrapper');
-const BLOCK_TAB = chrome.devtools.panels.themeName !== 'dark';
+const apiKeyKeyInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyKey');
+const apiKeyValueInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyValue');
+const bearerTokenInput = document.getElementById('repeatRequestAuthorizationTypeBearerToken');
+const basicAuthUsernameInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthUsername');
+const basicAuthPasswordInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthPassword');
 const { getMessage } = chrome.i18n;
 const MOUSE_POSITION = {
     x: 0,
@@ -16,7 +20,20 @@ const MOUSE_POSITION = {
 };
 const menuItemMapping = {
     '1': 'repeatRequest'
-}
+};
+
+const mimeTypeMapping = {
+    'none': null,
+    'formData': 'multipart/form-data',
+    'xWwwFormUrlencoded': 'application/x-www-form-urlencoded',
+    'binary': 'application/octet-stream',
+    'graphQl': 'application/json',
+    'rawJson': 'application/json',
+    'rawHtml': 'text/html',
+    'rawXml': 'text/xml',
+    'rawJs': 'application/javascript',
+    'rawText': 'text/plain'
+};
 // endregion
 
 // region init
@@ -43,6 +60,12 @@ const menuItemMapping = {
     BTN_CLEAR_REQUESTS.addEventListener('click', clearRequests.bind(null, true));
     BTN_REPEAT_REQUEST.addEventListener('click', () => {
         const selectedRequest = REQUEST_TABLE.getSelectedRequest();
+
+        if (!selectedRequest) {
+            BTN_REPEAT_REQUEST.setAttribute('disabled', 'disabled');
+            return;
+        }
+
         const requestData = JSON.parse(selectedRequest.dataset.request);
 
         openRepeatRequestDialog(requestData);
@@ -198,6 +221,7 @@ const menuItemMapping = {
 
     initContextMenuListener();
     initRepeatRequestDialog();
+    initMutationObserver(REQUEST_TABLE.getTableBody());
 // endregion
 
 function initContextMenuListener() {
@@ -219,20 +243,18 @@ function initContextMenuListener() {
 // region utils
 function appendRequest(requestData) {
     REQUEST_TABLE.addRequest(requestData);
-    REQUEST_TABLE.rerenderRequests();
 }
 
 function clearRequests(forceClear=false) {
     if (forceClear || localStorage.getItem('preserveLog') === 'false') {
         REQUEST_TABLE.clearRequests();
+        BTN_REPEAT_REQUEST.setAttribute('disabled', 'disabled');
     }
 }
 
-async function repeatRequest(requestData) {
-    const { method, url, headers } = requestData.request;
-    const preparedHeaders = Object.fromEntries(headers.filter(x => !x.name.startsWith(':')).map(x => [x.name, x.value]));
-    const modifiedRequestData = {
-        ...requestData,
+function prepareRequestData(oldRequestData, method, url, headers, body) {
+    const preparedData = {
+        ...oldRequestData,
         _initiator: {
             type: `
                 <abbr
@@ -243,24 +265,15 @@ async function repeatRequest(requestData) {
                 </abbr>
             `
         },
-        time: -1,
-        timings: {
-            blocked: 0,
-            dns: -1,
-            ssl: -1,
-            connect: -1,
-            send: 0,
-            wait: 0,
-            receive: 0,
-            _blocked_queueing: 0
+        request: {
+            ...oldRequestData.request,
+            method,
+            url,
+            headers
         }
-    }
+    };
 
-    REQUEST_TABLE.addRequest(modifiedRequestData);
-    await fetch(url, {
-        method,
-        headers: preparedHeaders
-    });
+    return preparedData;
 }
 
 function initRepeatRequestDialog() {
@@ -270,15 +283,15 @@ function initRepeatRequestDialog() {
     const basicAuthPasswordCheckbox = document.getElementById('repeatRequestAuthorizationTypeBasicAuthShowPassword');
     const repeatRequestBodyType = document.getElementById('repeatRequestBodyType');
     const repeatRequestBodyRawType = document.getElementById('repeatRequestBodyRawType');
+    const repeatRequestBody = document.getElementById('repeatRequestBody');
+    const repeatRequestSendBtn = document.getElementById('repeatRequestSend');
     const availableMethods = [ 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND', 'VIEW' ];
     const availablePanels = [ 'Authorization', 'Headers', 'Body' ];
     const availableAuthorizationTypes = [ 'none', 'apiKey', 'bearerToken', 'basicAuth' ];
     const availableBodyTypes = [ 'none', 'formData', 'xWwwFormUrlencoded', 'raw', 'binary', 'graphQl' ];
     const availableBodyRawTypes = [ 'text', 'js', 'json', 'html', 'xml' ];
 
-    repeatRequestCloseBtns.forEach(btn => btn.addEventListener('click', () => repeatRequestDialog.close()))
-
-    repeatRequestDialogUrl.setAttribute('placeholder', getMessage('repeatRequestDialogUrl'));
+    repeatRequestCloseBtns.forEach(btn => btn.addEventListener('click', closeRepeatRequestDialog));
 
     availableMethods.forEach(method => {
         const option = document.createElement('option');
@@ -350,14 +363,46 @@ function initRepeatRequestDialog() {
             repeatRequestBodyRawType.parentElement.style.display = 'none';
         }
     });
+
+    repeatRequestSendBtn.addEventListener('click', () => {
+        const selectedRequest = REQUEST_TABLE.getSelectedRequest();
+        const requestData = JSON.parse(selectedRequest.dataset.request);
+        const method = repeatRequestDialogMethod.value;
+        const url = repeatRequestDialogUrl.value;
+        let headers = Array.from(document.querySelectorAll (`div[data-panel-id="Headers"] tbody tr`))
+                             .filter(entry => entry.querySelector('td input:checked') && entry.querySelector('td:nth-child(2) input').value)
+                             .map(entry => {
+                                const name = entry.querySelector('td:nth-child(2) input').value;
+                                const value = entry.querySelector('td:nth-child(3) input').value;
+
+                                return { name, value };
+                             });
+        const authorization = repeatRequestAuthorizationType.value;
+
+        if (authorization !== 'none') {
+            headers = headers.filter(header => header.name?.toLowerCase() !== 'authorization');
+            headers.push({
+                name: 'Authorization',
+                value: getAuthorizationValue(authorization)
+            });
+        }
+        const bodyType = repeatRequestBodyType.value === 'raw' ? `${repeatRequestBodyType.value}_${repeatRequestBodyRawType.value}` : repeatRequestBodyType.value
+        const body = {
+            mimeType: mimeTypeMapping[bodyType],
+            text: repeatRequestBody.value
+        };
+
+        const preparedData = prepareRequestData(requestData, method, url, headers, body);
+        repeatRequest(preparedData);
+    });
 }
 
 function openRepeatRequestDialog(requestData) {
-    const headerPanel = repeatRequestDialog.querySelector('div[data-panel-id="Headers"] tbody');
-
+    document.body.style.overflowY = 'hidden';
     repeatRequestDialogMethod.value = requestData?.request?.method;
     repeatRequestDialogUrl.value = requestData?.request?.url ?? '';
     clearInputTable('Headers');
+
     requestData.request?.headers.filter(x => !x.name.startsWith(':')).forEach(header => {
         createInputTableEntry('Headers', header.name, header.value);
     });
@@ -370,6 +415,11 @@ function openRepeatRequestDialog(requestData) {
     repeatRequestAuthorizationTypeValueWrapper.querySelector(`div[data-authorization-id="${repeatRequestAuthorizationType.value}"]`)?.classList?.add('is-active');
 
     REPEAT_REQUEST_DIALOG.showModal();
+}
+
+function closeRepeatRequestDialog() {
+    document.body.style.overflowY = null;
+    repeatRequestDialog.close();
 }
 
 function createInputTableEntry(panelId, key, value) {
@@ -425,12 +475,6 @@ function removeInputTableEntry(panelId, entry) {
 }
 
 function setAuthorizationValue(type, value) {
-    const apiKeyKeyInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyKey');
-    const apiKeyValueInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyValue');
-    const bearerTokenInput = document.getElementById('repeatRequestAuthorizationTypeBearerToken');
-    const basicAuthUsernameInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthUsername');
-    const basicAuthPasswordInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthPassword');
-
     [apiKeyKeyInput, apiKeyValueInput, bearerTokenInput, basicAuthPasswordInput, basicAuthUsernameInput].forEach(input => {
         input.value = '';
     });
@@ -449,6 +493,106 @@ function setAuthorizationValue(type, value) {
         basicAuthUsernameInput.value = value.username;
         basicAuthPasswordInput.value = value.password;
     }
+}
+
+function getAuthorizationValue(authorizationType) {
+    if (authorizationType === 'apiKey') {
+        if (apiKeyKeyInput.value && apiKeyValueInput.value) {
+            return `${apiKeyKeyInput.value}=${apiKeyValueInput.value}`;
+        }
+
+        return apiKeyValueInput.value;
+    }
+
+    if (authorizationType === 'bearerToken') {
+        return `Bearer ${bearerTokenInput.value}`;
+    }
+
+    if (authorizationType === 'basicAuth') {
+        return `Basic ${window.btoa(`${basicAuthUsernameInput.value}:${basicAuthPasswordInput.value}`)}`;
+    }
+}
+
+function initMutationObserver(target) {
+    const config = { attributes: true, subtree: true };
+    const callback = (mutations) => {
+        for (const mutation of mutations) {
+            const { type, attributeName, target: { tagName, classList } } = mutation;
+
+            if (type === 'attributes' && attributeName === 'class' && tagName.toLowerCase() === 'tr' && classList.contains('network-row-selected')) {
+                BTN_REPEAT_REQUEST.removeAttribute('disabled');
+            } else {
+                BTN_REPEAT_REQUEST.setAttribute('disabled', 'disabled');
+            }
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(target, config);
+}
+
+function repeatRequest(requestData) {
+    const { method, url, headers, postData } = requestData.request;
+    const preparedHeaders = Object.fromEntries(headers.filter(x => !x.name.startsWith(':')).map(x => [x.name, x.value]));
+    const modifiedRequestData = {
+        ...requestData,
+        _initiator: {
+            type: `
+                <abbr
+                    class="network-table-initiator network-table-subtle-2"
+                    title="${getMessage('extensionName')}"
+                >
+                    ${getMessage('extensionShortName')}
+                </abbr>
+            `
+        },
+        time: -1,
+        timings: {
+            blocked: 0,
+            dns: -1,
+            ssl: -1,
+            connect: -1,
+            send: 0,
+            wait: 0,
+            receive: 0,
+            _blocked_queueing: 0
+        }
+    }
+
+    fetch(url, {
+        method,
+        headers: preparedHeaders,
+        body: postData?.text ?? undefined
+    }).then(res => {
+        modifiedRequestData.response = {
+            status: res.status,
+            statusText: res.statusText,
+            httpVersion: '',
+            headers: res.headers,
+            cookies: [],
+            redirectURL: '',
+            headersSize: -1, // res.headers.length === 0 ? -1 : res.headers.length,
+            bodySize: -1, // res.bodyUsed ? 0 : -1,
+            _error: null
+        };
+
+        REQUEST_TABLE.addRequest(modifiedRequestData);
+    }).catch(err => {
+        modifiedRequestData.response = {
+            status: res.status,
+            statusText: res.statusText,
+            httpVersion: '',
+            headers: res.headers,
+            cookies: [],
+            redirectURL: '',
+            headersSize: -1, // res.headers.length === 0 ? -1 : res.headers.length,
+            bodySize: -1, // res.bodyUsed ? 0 : -1,
+            _error: err.toString()
+        };
+
+        REQUEST_TABLE.addRequest(modifiedRequestData);
+    });
+    closeRepeatRequestDialog();
 }
 
 // endregion

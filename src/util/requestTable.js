@@ -29,9 +29,12 @@ class RequestTable {
     _renderRequest(requestData) {
         const requestEntryRow = document.createElement('tr');
         requestEntryRow.dataset.request = JSON.stringify(requestData);
-        requestEntryRow.addEventListener('click', () => {
-            this.getSelectedRequest()?.classList?.remove('network-row-selected');
-            requestEntryRow.classList.toggle('network-row-selected');
+
+        [ 'click', 'contextmenu' ].forEach(listener => {
+            requestEntryRow.addEventListener(listener, () => {
+                this.getSelectedRequest()?.classList?.remove('network-row-selected');
+                requestEntryRow.classList.toggle('network-row-selected');
+            });
         });
 
         if (requestData.response._error || requestData.response.status > 399 || requestData.response.status === 0) {
@@ -66,6 +69,7 @@ class RequestTable {
 
     addRequest(requestData) {
         this.requests.push(requestData);
+        this._renderRequest(requestData);
     }
 
     rerenderRequests() {

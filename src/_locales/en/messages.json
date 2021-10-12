@@ -15,7 +15,7 @@
     "message": "Clear requests"
   },
   "btnRepeatRequest": {
-    "message": "Repeat request"
+    "message": "Repeat request…"
   },
   "blockedDevtools": {
     "message": "Using devtools in light mode is a sin. Please switch to dark mode to use this tab."
