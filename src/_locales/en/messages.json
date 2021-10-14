@@ -15,14 +15,23 @@
     "message": "Clear requests"
   },
   "btnRepeatRequest": {
-    "message": "Repeat request…"
+    "message": "Modify and repeat request"
+  },
+  "cbHidePreflightRequestsLabel": {
+    "message": "Hide preflight requests"
+  },
+  "cbPreserveLogLabel": {
+    "message": "Preserve log"
+  },
+  "supportTheAuthor": {
+    "message": "Buy the author a cup of coffee! :)"
   },
   "blockedDevtools": {
     "message": "Using devtools in light mode is a sin. Please switch to dark mode to use this tab."
   },
 
   "repeatRequestDialogTitle": {
-    "message": "Repeat request"
+    "message": "Modify request"
   },
   "repeatRequestDialogMethod": {
     "message": "HTTP method"
@@ -89,6 +98,9 @@
   },
   "repeatRequestBodyPlaceholder": {
     "message": "Body"
+  },
+  "repeatRequestNoBody": {
+    "message": "This request does not have a body."
   },
   "repeatRequestBodyTypeLabel": {
     "message": "Type"

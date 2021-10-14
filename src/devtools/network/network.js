@@ -8,6 +8,10 @@ const repeatRequestDialogMethod = document.getElementById('repeatRequestDialogMe
 const repeatRequestDialog = document.getElementById('repeatRequestDialog');
 const repeatRequestAuthorizationType = document.getElementById('repeatRequestAuthorizationType');
 const repeatRequestAuthorizationTypeValueWrapper = document.querySelector('.repeatRequestAuthorizationTypeValueWrapper');
+const repeatRequestBodyValueWrapper = document.querySelector('.repeatRequestBodyValueWrapper');
+const repeatRequestBodyType = document.getElementById('repeatRequestBodyType');
+const repeatRequestBodyRawType = document.getElementById('repeatRequestBodyRawType');
+const repeatRequestBody = document.getElementById('repeatRequestBody');
 const apiKeyKeyInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyKey');
 const apiKeyValueInput = document.getElementById('repeatRequestAuthorizationTypeApiKeyValue');
 const bearerTokenInput = document.getElementById('repeatRequestAuthorizationTypeBearerToken');
@@ -28,11 +32,11 @@ const mimeTypeMapping = {
     'xWwwFormUrlencoded': 'application/x-www-form-urlencoded',
     'binary': 'application/octet-stream',
     'graphQl': 'application/json',
-    'rawJson': 'application/json',
-    'rawHtml': 'text/html',
-    'rawXml': 'text/xml',
-    'rawJs': 'application/javascript',
-    'rawText': 'text/plain'
+    'raw_json': 'application/json',
+    'raw_html': 'text/html',
+    'raw_xml': 'text/xml',
+    'raw_js': 'application/javascript',
+    'raw_text': 'text/plain'
 };
 // endregion
 
@@ -96,7 +100,6 @@ const mimeTypeMapping = {
                 return pathParts[pathParts.length -1] + url.search;
             },
             tooltip: row => row.request.url,
-            onDbClick: requestData => repeatRequest(requestData)
         },
         {
             name: "Path",
@@ -281,9 +284,6 @@ function initRepeatRequestDialog() {
     const repeatRequestPanelHeader = document.querySelector('.repeatRequestPanelHeader');
     const basicAuthPasswordInput = document.getElementById('repeatRequestAuthorizationTypeBasicAuthPassword');
     const basicAuthPasswordCheckbox = document.getElementById('repeatRequestAuthorizationTypeBasicAuthShowPassword');
-    const repeatRequestBodyType = document.getElementById('repeatRequestBodyType');
-    const repeatRequestBodyRawType = document.getElementById('repeatRequestBodyRawType');
-    const repeatRequestBody = document.getElementById('repeatRequestBody');
     const repeatRequestSendBtn = document.getElementById('repeatRequestSend');
     const availableMethods = [ 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS', 'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND', 'VIEW' ];
     const availablePanels = [ 'Authorization', 'Headers', 'Body' ];
@@ -357,10 +357,20 @@ function initRepeatRequestDialog() {
     });
 
     repeatRequestBodyType.addEventListener('change', () => {
+        const noBody = repeatRequestBodyValueWrapper.querySelector('p');
+
         if (repeatRequestBodyType.value === 'raw') {
             repeatRequestBodyRawType.parentElement.style.display = 'flex';
         } else {
             repeatRequestBodyRawType.parentElement.style.display = 'none';
+        }
+
+        if (repeatRequestBodyType.value === 'none') {
+            noBody.classList.remove('is-hidden');
+            repeatRequestBody.classList.add('is-hidden');
+        } else {
+            noBody.classList.add('is-hidden');
+            repeatRequestBody.classList.remove('is-hidden');
         }
     });
 
@@ -399,6 +409,8 @@ function initRepeatRequestDialog() {
 
 function openRepeatRequestDialog(requestData) {
     document.body.style.overflowY = 'hidden';
+    const mimeType = requestData.request.postData?.mimeType;
+    const text = requestData.request.postData?.text;
     repeatRequestDialogMethod.value = requestData?.request?.method;
     repeatRequestDialogUrl.value = requestData?.request?.url ?? '';
     clearInputTable('Headers');
@@ -413,6 +425,7 @@ function openRepeatRequestDialog(requestData) {
     repeatRequestAuthorizationType.value = auth.type;
     repeatRequestAuthorizationTypeValueWrapper.querySelector('div[data-authorization-id].is-active')?.classList?.remove('is-active');
     repeatRequestAuthorizationTypeValueWrapper.querySelector(`div[data-authorization-id="${repeatRequestAuthorizationType.value}"]`)?.classList?.add('is-active');
+    setBodyValue(mimeType, text);
 
     REPEAT_REQUEST_DIALOG.showModal();
 }
@@ -513,6 +526,31 @@ function getAuthorizationValue(authorizationType) {
     }
 }
 
+function setBodyValue(type, value) {
+    const noBody = repeatRequestBodyValueWrapper.querySelector('p');
+
+    if (type) {
+        noBody.classList.add('is-hidden');
+        repeatRequestBody.classList.remove('is-hidden');
+        repeatRequestBody.value = value;
+
+        const mime = Object.keys(mimeTypeMapping).find(key => mimeTypeMapping[key] === type);
+
+        if (mime.includes('_')) {
+            const [, raw] = mime.split('_');
+            repeatRequestBodyType.value = 'raw';
+            repeatRequestBodyRawType.value = raw;
+        } else {
+            repeatRequestBodyType.value = mime;
+        }
+
+    } else {
+        noBody.classList.remove('is-hidden');
+        repeatRequestBody.classList.add('is-hidden');
+        repeatRequestBody.value = '';
+    }
+}
+
 function initMutationObserver(target) {
     const config = { attributes: true, subtree: true };
     const callback = (mutations) => {
@@ -559,11 +597,16 @@ function repeatRequest(requestData) {
         }
     }
 
+
+    const time1 = performance.now();
     fetch(url, {
         method,
         headers: preparedHeaders,
         body: postData?.text ?? undefined
     }).then(res => {
+        let time2 = performance.now();
+        console.log(time2 - time1);
+        modifiedRequestData.time = time2 - time1;
         modifiedRequestData.response = {
             status: res.status,
             statusText: res.statusText,
@@ -579,10 +622,10 @@ function repeatRequest(requestData) {
         REQUEST_TABLE.addRequest(modifiedRequestData);
     }).catch(err => {
         modifiedRequestData.response = {
-            status: res.status,
-            statusText: res.statusText,
+            status: '(failed)',
+            statusText: '',
             httpVersion: '',
-            headers: res.headers,
+            headers: [],
             cookies: [],
             redirectURL: '',
             headersSize: -1, // res.headers.length === 0 ? -1 : res.headers.length,

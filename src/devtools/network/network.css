@@ -80,8 +80,9 @@ html, body {
   background-color: var(--network-toolbar);
   border-bottom: 1px solid var(--table-row-border);
   height: 26px;
+  color: var(--network-table-subtle);
 }
-#network-toolbar button {
+#network-toolbar a, #network-toolbar button {
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent;
@@ -93,23 +94,37 @@ html, body {
   cursor: pointer;
   margin: 0 0.5rem;
 }
-#network-toolbar button > img {
+#network-toolbar a > img, #network-toolbar button > img {
   width: 1rem;
   height: 1rem;
   opacity: 0.75;
   transition: 200ms;
 }
-#network-toolbar button > img:hover {
+#network-toolbar a > img:hover, #network-toolbar button > img:hover {
   opacity: 1;
 }
-#network-toolbar button:disabled {
+#network-toolbar a:disabled, #network-toolbar button:disabled {
   cursor: not-allowed;
 }
-#network-toolbar button:disabled > img {
+#network-toolbar a:disabled > img, #network-toolbar button:disabled > img {
   opacity: 0.45;
 }
-#network-toolbar button:disabled > img:hover {
+#network-toolbar a:disabled > img:hover, #network-toolbar button:disabled > img:hover {
   opacity: 0.45;
+}
+#network-toolbar a, #network-toolbar a:visited {
+  text-decoration: none;
+}
+#network-toolbar label {
+  display: flex;
+  align-items: center;
+  margin: 0 0.25rem;
+}
+#network-toolbar label > input[type=checkbox] {
+  filter: invert(80%);
+}
+#network-toolbar label > span {
+  margin-left: 0.25rem;
 }
 #network-toolbar .toolbar-divider {
   width: 1px;
@@ -412,7 +427,10 @@ dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > di
   height: 35px;
   line-height: 35px;
 }
-dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Body] > textarea {
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Body] .repeatRequestBodyValueWrapper > p {
+  margin-top: 0;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Body] .repeatRequestBodyValueWrapper > textarea {
   width: 100%;
   height: 17.5rem;
   resize: none;
@@ -421,6 +439,9 @@ dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > di
   background-color: transparent;
   color: #fff;
   margin-left: 1.25rem;
+}
+dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Body] .repeatRequestBodyValueWrapper > p.is-hidden, dialog > .dialog-content > .repeatRequestPanelWrapper > .repeatRequestPanel > div[data-panel-id][data-panel-id=Body] .repeatRequestBodyValueWrapper textarea.is-hidden {
+  display: none;
 }
 dialog > .dialog-actions {
   display: flex;

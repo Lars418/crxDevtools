@@ -17,6 +17,8 @@
     <script src="network.js" defer></script>
 </head>
 <body>
+    <!-- Icons provided by feathericons.com -->
+
     <section id="network-toolbar">
         <button
             id="btnClearRequests"
@@ -32,8 +34,41 @@
                 data-intl-title="btnRepeatRequest"
                 disabled
         >
-            <img src="../../img/icon/repeat.svg" alt="" />
+            <img src="../../img/icon/pen.svg" alt="" />
         </button>
+
+        <span class="toolbar-divider" aria-hidden="true"></span>
+
+        <label>
+            <input
+                    type="checkbox"
+                    id="cbPreserveLog"
+            />
+
+            <span data-intl="cbPreserveLogLabel"></span>
+        </label>
+
+        <span class="toolbar-divider" aria-hidden="true"></span>
+
+        <label>
+            <input
+                    type="checkbox"
+                    id="cbHidePreflightRequests"
+            />
+
+            <span data-intl="cbHidePreflightRequestsLabel"></span>
+        </label>
+
+        <span class="toolbar-divider" aria-hidden="true"></span>
+
+        <a
+            id="supportTheAuthor"
+            data-intl-title="supportTheAuthor"
+            href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=lars.koelker@gmx.de&lc=US&no_note=0&item_name=Buy+me+a+coffee+☕️&cn=&curency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted"
+            target="_blank"
+        >
+            <img src="../../img/icon/cup.svg" alt="Filled coffee cup" />
+        </a>
     </section>
 
     <div id="requestTableWrapper"></div>
@@ -188,10 +223,14 @@
                             </div>
                         </div>
 
-                        <textarea
-                                id="repeatRequestBody"
-                                data-intl-placeholder="repeatRequestBodyPlaceholder"
-                        ></textarea>
+                        <div class="repeatRequestBodyValueWrapper">
+                            <p data-intl="repeatRequestNoBody"></p>
+
+                            <textarea
+                                    id="repeatRequestBody"
+                                    data-intl-placeholder="repeatRequestBodyPlaceholder"
+                            ></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
