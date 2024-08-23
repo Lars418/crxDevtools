@@ -32,4 +32,4 @@ available. Some features are technically not possible, others just have not
 been implemented yet.
 
 
-https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=lars.koelker@gmx.de&lc=US&no_note=0&item_name=Buy+me+a+coffee!+:)+☕️&cn=&curency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
+https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=lars@koelker.dev&lc=US&no_note=0&item_name=Buy+me+a+coffee!+:)+☕️&cn=&curency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
